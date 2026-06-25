@@ -1,0 +1,65 @@
+# ============================================================
+# npu_gelu_mul_custom — 自定义 GELU_MUL 算子
+# 课题0624 Wiki 图片示例代码
+# ============================================================
+#
+# 使用方法：
+#   将此代码块添加到 op_plugin_functions.yaml 的 custom: 字段下
+#   然后运行 codegen 生成 C++ 代码并编译
+#
+# 文件路径参考：
+#   third_party/op-plugin/op_plugin/config/op_plugin_functions.yaml
+# ============================================================
+
+# ------------------------------------------------------------------
+# 方案一：基础版 — 完全参照 npu_gelu_mul 的配置
+# ------------------------------------------------------------------
+  - func: npu_gelu_mul_custom(Tensor input, *, str approximate='none') -> Tensor
+    op_api: [v2.6, newest]
+    exposed: [v2.6, newest]
+    gen_opapi:
+      out:
+        size: npu_gelu_mul_output_size(input)
+        dtype: input
+      new_params:
+        approximate_str: 'npu_gelu_approximate_str(approximate)'
+        approximate_ptr: 'const_cast<char*>(approximate_str.c_str())'
+      exec: aclnnGeluMul, input, approximate_ptr, out
+
+# ------------------------------------------------------------------
+# 方案二：精简版 — 使用默认参数，无需参数预处理
+# ------------------------------------------------------------------
+# - func: npu_gelu_mul_custom_v2(Tensor input) -> Tensor
+#   op_api: [v2.6, newest]
+#   exposed: [v2.6, newest]
+#   gen_opapi:
+#     out:
+#       size: npu_gelu_mul_output_size(input)
+#       dtype: input
+#     exec: aclnnGeluMul
+
+# ------------------------------------------------------------------
+# 方案三：多版本覆盖（推荐 — 含 functional + out + inplace）
+# ------------------------------------------------------------------
+# --- functional 版本 ---
+# - func: npu_gelu_mul_custom_v3(Tensor input, *, str approximate='none') -> Tensor
+#   op_api: [v2.6, newest]
+#   gen_opapi:
+#     out:
+#       size: npu_gelu_mul_output_size(input)
+#       dtype: input
+#     new_params:
+#       approximate_str: 'npu_gelu_approximate_str(approximate)'
+#       approximate_ptr: 'const_cast<char*>(approximate_str.c_str())'
+#     exec: aclnnGeluMul, input, approximate_ptr, out
+#
+# --- out 版本 ---
+# - func: npu_gelu_mul_custom_v3.out(Tensor input, *, str approximate='none', Tensor(a!) out) -> Tensor(a!)
+#   op_api: [v2.6, newest]
+#   gen_opapi:
+#     out:
+#       size: npu_gelu_mul_output_size(input)
+#     new_params:
+#       approximate_str: 'npu_gelu_approximate_str(approximate)'
+#       approximate_ptr: 'const_cast<char*>(approximate_str.c_str())'
+#     exec: aclnnGeluMul, input, approximate_ptr, out
