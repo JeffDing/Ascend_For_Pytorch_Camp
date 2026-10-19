@@ -1,0 +1,53 @@
+W1019 10:25:40.434000 9225 site-packages/torch/distributed/run.py:852] 
+W1019 10:25:40.434000 9225 site-packages/torch/distributed/run.py:852] *****************************************
+W1019 10:25:40.434000 9225 site-packages/torch/distributed/run.py:852] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W1019 10:25:40.434000 9225 site-packages/torch/distributed/run.py:852] *****************************************
+[rank 1] world_size=2, device=npu:1
+[rank 0] world_size=2, device=npu:0
+[rank0]:[W1019 10:25:45.615351840 ToKernelNpu.cpp:41] Warning: Device do not support double dtype now, dtype cast replace with float. (function operator())
+[rank 0] Step1 local_tensor (shape=(2, 4)) =
+tensor([[1., 2., 3., 4.],
+        [5., 6., 7., 8.]], device='npu:0')
+[rank 1] Step1 local_tensor (shape=(2, 4)) =
+tensor([[101., 102., 103., 104.],
+        [105., 106., 107., 108.]], device='npu:1')
+[rank 1] Step2 gathered big_tensor (shape=(4, 4)) =
+tensor([[  1.,   2.,   3.,   4.],
+        [  5.,   6.,   7.,   8.],
+        [101., 102., 103., 104.],
+        [105., 106., 107., 108.]], device='npu:1')
+[rank 0] Step2 gathered big_tensor (shape=(4, 4)) =
+tensor([[  1.,   2.,   3.,   4.],
+        [  5.,   6.,   7.,   8.],
+        [101., 102., 103., 104.],
+        [105., 106., 107., 108.]], device='npu:0')
+[rank 1] Step3 weight (shape=(4, 3)) =
+tensor([[-0.3020,  1.9955, -1.4347],
+        [-2.5983,  0.0506, -0.5337],
+        [-0.0855,  1.5321,  0.3525],
+        [ 0.9887,  1.8348,  0.2510]], device='npu:1')
+[rank 1] Step3 matmul result (AllReduce 之前) =
+tensor([[-1.8003e+00,  1.4032e+01, -4.4065e-01],
+        [-9.7886e+00,  3.5683e+01, -5.9001e+00],
+        [-2.0151e+02,  5.5532e+02, -1.3693e+02],
+        [-2.0950e+02,  5.7697e+02, -1.4239e+02]], device='npu:1')
+[rank 0] Step3 weight (shape=(4, 3)) =
+tensor([[-0.3020,  1.9955, -1.4347],
+        [-2.5983,  0.0506, -0.5337],
+        [-0.0855,  1.5321,  0.3525],
+        [ 0.9887,  1.8348,  0.2510]], device='npu:0')
+[rank 0] Step3 matmul result (AllReduce 之前) =
+tensor([[-1.8003e+00,  1.4032e+01, -4.4065e-01],
+        [-9.7886e+00,  3.5683e+01, -5.9001e+00],
+        [-2.0151e+02,  5.5532e+02, -1.3693e+02],
+        [-2.0950e+02,  5.7697e+02, -1.4239e+02]], device='npu:0')
+[rank 1] Step4 matmul result (AllReduce 之后，最终结果) =
+tensor([[-3.6006e+00,  2.8064e+01, -8.8130e-01],
+        [-1.9577e+01,  7.1366e+01, -1.1800e+01],
+        [-4.0302e+02,  1.1106e+03, -2.7386e+02],
+        [-4.1899e+02,  1.1539e+03, -2.8478e+02]], device='npu:1')
+[rank 0] Step4 matmul result (AllReduce 之后，最终结果) =
+tensor([[-3.6006e+00,  2.8064e+01, -8.8130e-01],
+        [-1.9577e+01,  7.1366e+01, -1.1800e+01],
+        [-4.0302e+02,  1.1106e+03, -2.7386e+02],
+        [-4.1899e+02,  1.1539e+03, -2.8478e+02]], device='npu:0')
