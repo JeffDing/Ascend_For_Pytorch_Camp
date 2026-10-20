@@ -1,0 +1,28 @@
+W1020 21:56:06.305000 17498 site-packages/torch/distributed/run.py:852] 
+/usr/local/python3.12.13/lib/python3.12/site-packages/torch/distributed/tensor/placement_types.py:195: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  output = torch.empty_like(first)
+/usr/local/python3.12.13/lib/python3.12/site-packages/torch/distributed/tensor/placement_types.py:195: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  output = torch.empty_like(first)
+rank=0 归约前的部分和: placements=(Partial(sum),), global_shape=(4, 4), local_shape=(4, 4)
+tensor([[ 56.,  62.,  68.,  74.],
+        [248., 286., 324., 362.],
+        [440., 510., 580., 650.],
+        [632., 734., 836., 938.]])
+/usr/local/python3.12.13/lib/python3.12/site-packages/torch/distributed/c10d_logger.py:83: UserWarning: barrier(): using the device under current context. You can specify `device_id` in `init_process_group` to mute this warning.
+  return func(*args, **kwargs)
+rank=1 归约前的部分和: placements=(Partial(sum),), global_shape=(4, 4), local_shape=(4, 4)
+tensor([[ 504.,  526.,  548.,  570.],
+        [1208., 1262., 1316., 1370.],
+        [1912., 1998., 2084., 2170.],
+        [2616., 2734., 2852., 2970.]])
+rank=0 归约后的完整结果: placements=(Replicate(),), global_shape=(4, 4), local_shape=(4, 4)
+tensor([[ 560.,  588.,  616.,  644.],
+        [1456., 1548., 1640., 1732.],
+        [2352., 2508., 2664., 2820.],
+        [3248., 3468., 3688., 3908.]])
+rank=1 归约后的完整结果: placements=(Replicate(),), global_shape=(4, 4), local_shape=(4, 4)
+tensor([[ 560.,  588.,  616.,  644.],
+        [1456., 1548., 1640., 1732.],
+        [2352., 2508., 2664., 2820.],
+        [3248., 3468., 3688., 3908.]])
+PASS: 作业 2 全部断言通过

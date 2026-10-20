@@ -1,0 +1,18 @@
+# DTensor 课后作业简答题回答
+
+运行环境：NPU + HCCL（`torchrun --standalone --nproc-per-node=2 --device npu`）
+PyTorch 版本：2.10.0，torch_npu 版本：2.1.0
+
+## 硬件信息
+
+- **NPU 型号**：Ascend 910（`torch.npu.get_device_properties().name` 返回 `Ascend910_9382`），npu-smi 26.1.1
+- **可用 NPU 设备数**：2
+- **CPU 型号**：华为鲲鹏（Kunpeng）ARM64 处理器（`/proc/cpuinfo`：implementer 0x48、part 0xd02；容器内 `lscpu` 的 Model name 显示为 unknown）
+
+## 作业 1：为什么全局 shape 没变，本地 shape 却变了？
+
+全局 shape 是 DTensor 的逻辑视图，描述完整张量的大小，由源张量决定，与分布方式无关；本地 shape 是每个 rank 实际持有的物理分片大小，由 placement 在对应维上按 rank 数均分得到，因此 `Shard(0)`、`Shard(1)`、`Replicate()` 三种分布下本地 shape 不同。
+
+## 作业 2：为什么每个 rank 的输出 shape 已经完整，仍然需要求和？
+
+X 按列分片、W 按行分片后，每个 rank 只算出了完整乘积的一部分贡献（部分和），所有 rank 在数学上对应不同的累加项，`Partial` 语义要求把这些部分和跨 rank 求和才能得到真正的 `X @ W`；shape 完整不等于数值完整。
