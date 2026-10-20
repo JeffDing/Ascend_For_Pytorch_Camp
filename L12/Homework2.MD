@@ -2,7 +2,7 @@
 
 ## 环境
 
-- 运行方式：`torchrun --standalone --nproc-per-node=2 --device npu`
+- 运行方式：`torchrun --standalone --nproc-per-node=2 <脚本名> --device npu`（`--device` 是脚本自身的参数，必须放在脚本名**之后**；放在 torchrun 选项区会报 `unrecognized arguments: --device`）
 - 后端：NPU + HCCL
 - PyTorch 版本：2.10.0，torch_npu 版本：2.1.0
 - NPU 型号：Ascend 910（`Ascend910_9382`），npu-smi 26.1.1

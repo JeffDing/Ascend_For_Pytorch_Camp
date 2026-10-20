@@ -1,6 +1,7 @@
 # DTensor 课后作业简答题回答
 
-运行环境：NPU + HCCL（`torchrun --standalone --nproc-per-node=2 --device npu`）
+运行环境：NPU + HCCL（`torchrun --standalone --nproc-per-node=2 <脚本名> --device npu`）
+**注意：**`--device` 是脚本自身的参数，必须放在脚本名**之后**；放在 torchrun 选项区会报 `unrecognized arguments: --device`
 PyTorch 版本：2.10.0，torch_npu 版本：2.1.0
 
 ## 硬件信息
